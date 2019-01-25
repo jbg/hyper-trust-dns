@@ -1,5 +1,3 @@
-#![feature(self_struct_ctor)]
-
 use std::io::Error;
 use std::net::IpAddr;
 use std::vec;
@@ -14,7 +12,7 @@ pub struct HyperTrustDnsResolver(AsyncResolver);
 
 impl HyperTrustDnsResolver {
     pub fn new(resolver: AsyncResolver) -> Self {
-        Self(resolver)
+        HyperTrustDnsResolver(resolver)
     }
 }
 
