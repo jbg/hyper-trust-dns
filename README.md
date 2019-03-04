@@ -12,6 +12,7 @@ In this example, [hyper-rustls](https://github.com/ctz/hyper-rustls) is also use
 use hyper::{client::HttpConnector, Client};
 use hyper_rustls::HttpsConnector;
 use hyper_trust_dns::HyperTrustDnsResolver;
+use rustls::ClientConfig;
 use tokio::runtime::Runtime;
 use trust_dns_resolver::AsyncResolver;
 
