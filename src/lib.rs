@@ -1,9 +1,13 @@
-use std::io::Error;
-use std::net::IpAddr;
-use std::vec;
+use std::{
+    io::Error,
+    net::IpAddr,
+    vec,
+};
 
-use hyper::client::connect::dns::{Name, Resolve};
-use hyper::rt::Future;
+use hyper::{
+    client::connect::dns::{Name, Resolve},
+    rt::Future,
+};
 use trust_dns_resolver::AsyncResolver;
 
 
@@ -18,7 +22,7 @@ impl HyperTrustDnsResolver {
 
 impl Resolve for HyperTrustDnsResolver {
     type Addrs = vec::IntoIter<IpAddr>;
-    type Future = Box<Future<Item=Self::Addrs, Error=Error> + Send>;
+    type Future = Box<dyn Future<Item=Self::Addrs, Error=Error> + Send>;
 
     fn resolve(&self, name: Name) -> Self::Future {
         Box::new(
