@@ -1,13 +1,16 @@
 use std::{
+    future::Future,
     io::Error,
     net::IpAddr,
+    pin::Pin,
     vec,
 };
 
-use hyper::{
-    client::connect::dns::{Name, Resolve},
-    rt::Future,
+use futures::{
+    compat::Future01CompatExt,
+    future::TryFutureExt,
 };
+use hyper::client::connect::dns::{Name, Resolve};
 use trust_dns_resolver::AsyncResolver;
 
 
@@ -22,13 +25,14 @@ impl HyperTrustDnsResolver {
 
 impl Resolve for HyperTrustDnsResolver {
     type Addrs = vec::IntoIter<IpAddr>;
-    type Future = Box<dyn Future<Item=Self::Addrs, Error=Error> + Send>;
+    type Future = Pin<Box<dyn Future<Output=Result<Self::Addrs, Error>> + Send>>;
 
     fn resolve(&self, name: Name) -> Self::Future {
-        Box::new(
+        Box::pin(
             self.0
                 .lookup_ip(name.as_str())
-                .map(|res|
+                .compat()
+                .map_ok(|res|
                     res.iter()
                        .collect::<Vec<_>>()
                        .into_iter()
